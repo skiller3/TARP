@@ -13,5 +13,6 @@ Depends:
     PerformanceAnalytics,
     xts,
     zoo
-Description: TARP is a generic framework for understanding, testing, and optimizing trade strategies.
+Description: TARP is a generic framework for understanding, testing, and
+    optimizing trade strategies.
 License: LGPL (>= 3)

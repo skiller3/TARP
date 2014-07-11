@@ -8,7 +8,7 @@ TestStrategy <- function(actionFn, returnFn, tsData, portfolio) {
   
   returns <- rollapplyr(zoo(times, order.by=times), width=2, FUN=function(timePair) {
     portfolioSnapshots[[as.character(timePair[2])]] <<- actionFn(timePair[2], tsData, portfolioSnapshots[[as.character(timePair[1])]])
-    returnFn(timePair[2], timePair[1], tsData, portfolioSnapshots[[as.character(timePair[1])]])
+    returnFn(timePair[1], timePair[2], tsData, portfolioSnapshots[[as.character(timePair[1])]])
   })
   
   testResult <- list(PortfolioSnapshots=portfolioSnapshots, ReturnSeries=returns, TimeSeries=tsData,

@@ -1,0 +1,17 @@
+Package: TARP
+Type: Package
+Title: Trading Algorithm Research Package
+Version: 1.0
+Date: 2014-07-11
+Author: Skye Isard
+Maintainer: Skye Isard <skye.isard@gmail.com>
+Suggests:
+    quantmod,
+    RQuantLib
+Depends:
+    GA,
+    PerformanceAnalytics,
+    xts,
+    zoo
+Description: TARP is a generic framework for understanding, testing, and optimizing trade strategies.
+License: LGPL (>= 3)

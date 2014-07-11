@@ -18,73 +18,73 @@ TestStrategy <- function(actionFn, returnFn, tsData, portfolio) {
 }
 
 #' @export
-as.list.TestResult <- function(result) {
-  class(result) <- "list"  # Class "assignment" actually does a deep copy
-  result
+as.list.TestResult <- function(testResult) {
+  class(testResult) <- "list"  # Class "assignment" actually does a deep copy
+  testResult
 }
 
 #' @export
-print.TestResult <- function(result) {
-  printf("Total return:      %.5f\n", TotalReturn(result))
-  printf("Volatility:        %.5f\n", Volatility(result))
-  printf("Sharpe (0-RFR):    %.5f\n", Sharpe(result, FUN="StdDev"))
-  printf("Max Drawdown:      %.5f\n", MaxDrawdown(result))
-  printf("Timeseries length: %.0f\n", length(TimeSeries(result)))
-  printf("Timeseries start:  %s\n", index(TimeSeries(result))[1])
-  printf("Timeseries end:    %s\n", index(TimeSeries(result))[nrow(TimeSeries(result))])
+print.TestResult <- function(testResult) {
+  printf("Total return:      %.5f\n", TotalReturn(testResult))
+  printf("Volatility:        %.5f\n", Volatility(testResult))
+  printf("Sharpe (0-RFR):    %.5f\n", Sharpe(testResult, FUN="StdDev"))
+  printf("Max Drawdown:      %.5f\n", MaxDrawdown(testResult))
+  printf("Timeseries length: %.0f\n", length(TimeSeries(testResult)))
+  printf("Timeseries start:  %s\n", index(TimeSeries(testResult))[1])
+  printf("Timeseries end:    %s\n", index(TimeSeries(testResult))[nrow(TimeSeries(testResult))])
 }
 
 #' @export
-ReturnSeries <- function(result) {
-  result[["ReturnSeries"]]
+ReturnSeries <- function(testResult) {
+  testResult[["ReturnSeries"]]
 }
 
 #' @export
-PortfolioSnapshots <- function(result) {
-  result[["PortfolioSnapshots"]]
+PortfolioSnapshots <- function(testResult) {
+  testResult[["PortfolioSnapshots"]]
 }
 
 #' @export
-PortfolioSnapshot <- function(result, time) {
-  PortfolioSnapshots(result)[[as.character(time)]]
+PortfolioSnapshot <- function(testResult, time) {
+  PortfolioSnapshots(testResult)[[as.character(time)]]
 }
 
 #' @export
-TimeSeries <- function(result) {
-  result[["TimeSeries"]]
+TimeSeries <- function(testResult) {
+  testResult[["TimeSeries"]]
 }
 
 #' @export
-ActionFunction <- function(result) {
-  result[["ActionFunction"]]  
+ActionFunction <- function(testResult) {
+  testResult[["ActionFunction"]]  
 }
 
 #' @export
-ReturnFunction <- function(result) {
-  result[["ReturnFunction"]]
+ReturnFunction <- function(testResult) {
+  testResult[["ReturnFunction"]]
 }
 
 #' @export
-TotalReturn <- function(result) {
-  prod(1 + as.vector(ReturnSeries(result))) - 1
+TotalReturn <- function(testResult) {
+  prod(1 + as.vector(ReturnSeries(testResult))) - 1
 }
 
 #' @export
-Volatility <- function(result) {
-  sd(as.vector(ReturnSeries(result)))
+Volatility <- function(testResult) {
+  sd(as.vector(ReturnSeries(testResult)))
 }
 
 #' @export
-Sharpe <- function(result, ...) {
-  SharpeRatio(R=ReturnSeries(result), ...)
+Sharpe <- function(testResult, ...) {
+  SharpeRatio(R=ReturnSeries(testResult), ...)
 }
 
 #' @export
-NAVSeries <- function(result) {
-  cumprod(1 + ReturnSeries(result))
+NAVSeries <- function(testResult) {
+  cumprod(1 + ReturnSeries(testResult))
 }
 
 #' @export
-MaxDrawdown <- function(result, ...) {
-  maxDrawdown(R=as.xts(ReturnSeries(result)), ...)
+MaxDrawdown <- function(testResult, ...) {
+  maxDrawdown(R=as.xts(ReturnSeries(testResult)), ...)
 }

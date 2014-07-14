@@ -29,7 +29,7 @@ print.TestResult <- function(testResult) {
   printf("Volatility:        %.5f\n", Volatility(testResult))
   printf("Sharpe (0-RFR):    %.5f\n", Sharpe(testResult, FUN="StdDev"))
   printf("Max Drawdown:      %.5f\n", MaxDrawdown(testResult))
-  printf("Timeseries length: %.0f\n", length(TimeSeries(testResult)))
+  printf("Timeseries length: %.0f\n", length(index(TimeSeries(testResult))))
   printf("Timeseries start:  %s\n", index(TimeSeries(testResult))[1])
   printf("Timeseries end:    %s\n", index(TimeSeries(testResult))[nrow(TimeSeries(testResult))])
 }

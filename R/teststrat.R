@@ -1,18 +1,30 @@
+#' Tests a particular strategy.
+#'
 #' @export
-TestStrategy <- function(actionFn, returnFn, tsData, portfolio) {
+TestStrategy <- function(actionFn, returnFn, tsData, portfolio, snapshotPortfolio=FALSE) {
   times <- index(tsData)
   
+  origPortfolio <- portfolio
+  
   # The first tick is special: there is no previous time, so there is no return to compute
-  portfolioSnapshots <- list()
-  portfolioSnapshots[[as.character(times[1])]] <- actionFn(times[1], tsData, portfolio)
+  portfolio <- actionFn(times[1], tsData, portfolio)
+  if (snapshotPortfolio) {
+    portfolioSnapshots <- as.list(rep(NA, times=length(index(tsData))))
+    names(portfolioSnapshots) <- as.character(index(tsData))
+    portfolioSnapshots[[as.character(times[1])]] <- portfolio
+  }
   
   returns <- rollapplyr(zoo(times, order.by=times), width=2, FUN=function(timePair) {
-    portfolioSnapshots[[as.character(timePair[2])]] <<- actionFn(timePair[2], tsData, portfolioSnapshots[[as.character(timePair[1])]])
-    returnFn(timePair[1], timePair[2], tsData, portfolioSnapshots[[as.character(timePair[1])]])
+    returnValue <- returnFn(timePair[1], timePair[2], tsData, portfolio)
+    portfolio <<- actionFn(timePair[2], tsData, portfolio)
+    if (snapshotPortfolio) portfolioSnapshots[[as.character(timePair[2])]] <<- portfolio
+    returnValue
   })
   
-  testResult <- list(PortfolioSnapshots=portfolioSnapshots, ReturnSeries=returns, TimeSeries=tsData,
-                     ActionFunction=actionFn, ReturnFunction=returnFn)
+  testResult <- list(ReturnSeries=returns, TimeSeries=tsData, ActionFunction=actionFn, 
+                     ReturnFunction=returnFn, OriginalPortfolio=origPortfolio)
+  if (snapshotPortfolio) testResult[["PortfolioSnapshots"]] <- portfolioSnapshots
+  
   class(testResult) <- c("TestResult", "list")
   testResult
 }
@@ -41,12 +53,24 @@ ReturnSeries <- function(testResult) {
 
 #' @export
 PortfolioSnapshots <- function(testResult) {
-  testResult[["PortfolioSnapshots"]]
+  if (!is.null(testResult[["PortfolioSnapshots"]])) {
+    testResult[["PortfolioSnapshots"]]
+  }
+  else {
+    actionFn <- ActionFunction(testResult)
+    tsData <- TimeSeries(testResult)
+    portfolio <- OriginalPortfolio(testResult)
+    
+    Map(index(tsData), f=function(time) {
+      portfolio <<- actionFn(time, tsData, portfolio)
+      portfolio
+    })
+  }
 }
 
 #' @export
-PortfolioSnapshot <- function(testResult, time) {
-  PortfolioSnapshots(testResult)[[as.character(time)]]
+OriginalPortfolio <- function(testResult) {
+  testResult[["OriginalPortfolio"]]
 }
 
 #' @export

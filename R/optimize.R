@@ -1,3 +1,7 @@
+#' Exhaustively brute force optimize a strategy over provided ranges of parameters.
+#' 
+#' @description OptimizeBruteForce
+#'
 #' @export
 OptimizeBruteForce <- function(fitnessFn, actionFactoryFn, returnFn, tsData, portfolio, ...) {
   # Create every possible permutation of our parameter ranges
@@ -20,11 +24,12 @@ OptimizeBruteForce <- function(fitnessFn, actionFactoryFn, returnFn, tsData, por
   optimResult
 }
 
-#' @export
-OptimizeGenetic <- function(fitnessFn, actionFactoryFn, returnFn, tsData, portfolio, ...) {
-  
-}
+# OptimizeGenetic <- function(fitnessFn, actionFactoryFn, returnFn, tsData, portfolio, ...) {
+#   
+# }
 
+#' 
+#'
 #' @export
 as.list.OptimResult <- function(optimResult) {
   class(optimResult) <- "list"  # Class "assignment" actually does a deep copy
